@@ -58,6 +58,10 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
         box = out_boxes[i]
         score = out_scores[i]
 
+        if predicted_class not in label_dicc:
+            label_dicc[predicted_class] = 0
+        label_dicc[predicted_class] += 1
+
         label = '{} {:.2f}'.format(predicted_class, score)
 
         draw = ImageDraw.Draw(image)
@@ -69,9 +73,6 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
         bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
         right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
 
-        if label not in label_dicc:
-            label_dicc[label] = 0
-        label_dicc[label] += 1
         print(label, (left, top), (right, bottom))
 
         if top - label_size[1] >= 0:
