@@ -52,6 +52,7 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
     font = ImageFont.truetype(font='font/FiraMono-Medium.otf',size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
     thickness = (image.size[0] + image.size[1]) // 300
 
+    label_dicc = {}
     for i, c in reversed(list(enumerate(out_classes))):
         predicted_class = class_names[c]
         box = out_boxes[i]
@@ -67,6 +68,10 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
         left = max(0, np.floor(left + 0.5).astype('int32'))
         bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
         right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
+
+        if label not in label_dicc:
+            label_dicc[label] = 0
+        label_dicc[label] += 1
         print(label, (left, top), (right, bottom))
 
         if top - label_size[1] >= 0:
@@ -80,3 +85,4 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
         draw.rectangle([tuple(text_origin), tuple(text_origin + label_size)], fill=colors[c])
         draw.text(text_origin, label, fill=(0, 0, 0), font=font)
         del draw
+    return label_dicc
